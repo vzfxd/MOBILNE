@@ -3,6 +3,7 @@ package com.mobilne.lista1
 class MathOperation{
 
     private var answers: MutableList<Int> = mutableListOf()
+    private var correctAnswer: Int = 0
     private var operation: String = ""
 
     private fun rollOperation(){
@@ -23,6 +24,7 @@ class MathOperation{
             result = val1 * val2
         }
         this.operation =  operation
+        this.correctAnswer = result;
         this.answers.add(result)
     }
 
@@ -39,9 +41,21 @@ class MathOperation{
 
         this.answers.add(val1)
     }
+    fun getCorrectAnswer(): Int{
+        return this.correctAnswer
+    }
+
+    fun getAnswers(): MutableList<Int>{
+        return this.answers
+    }
+
+    fun getOperation():String{
+        return this.operation;
+    }
 
     fun reset() {
         this.answers = mutableListOf()
+        this.correctAnswer = 0
         this.operation = ""
     }
 
@@ -49,6 +63,7 @@ class MathOperation{
         rollOperation()
         rollWrongAnswer()
         rollWrongAnswer()
+        this.answers.shuffle()
         return Pair(this.operation,this.answers)
     }
 }

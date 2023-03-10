@@ -1,22 +1,37 @@
 package com.mobilne.lista1
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.mobilne.lista1.databinding.ActivityMainBinding
+    private val mathOperation = MathOperation()
+    private val game = Game(mathOperation)
 
 class MainActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityMainBinding
-    private val mathOperation = MathOperation()
-    private val game = Game(mathOperation)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        startGame()
+
+        if(savedInstanceState != null){
+            val score = savedInstanceState.getInt("score")
+            val operation = savedInstanceState.getString("operation")
+            val answers = savedInstanceState.getIntegerArrayList("answers")
+            updateUI(operation!!,score, answers!!.toMutableList())
+        }else{
+            startGame()
+        }
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+        savedInstanceState.putInt("score",game.getScore())
+        savedInstanceState.putString("operation",game.getOperation())
+        savedInstanceState.putIntegerArrayList("answers", ArrayList(game.getAnswers()))
     }
 
     private fun startGame(){
@@ -34,10 +49,9 @@ class MainActivity : AppCompatActivity(){
     private fun updateUI(operation: String, score: Int, answers: MutableList<Int>) {
         binding.score.text = score.toString()
         binding.operation.text = operation
-        val shuffledAnswers = answers.shuffled()
-        binding.lbtn.text = shuffledAnswers[0].toString()
-        binding.mbtn.text = shuffledAnswers[1].toString()
-        binding.rbtn.text = shuffledAnswers[2].toString()
+        binding.lbtn.text = answers[0].toString()
+        binding.mbtn.text = answers[1].toString()
+        binding.rbtn.text = answers[2].toString()
     }
 
     fun onClick(v: View){
